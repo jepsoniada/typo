@@ -1,0 +1,14 @@
+{
+    "name": "typo",
+    "version": "1.0",
+    "description": "alpha",
+    "manifest_version": 2,
+    "permissions": [],
+    "content_scripts": [
+        {
+           "matches": ["<all_urls>"],
+            "js": ["functionBar.js"],
+            "css": ["serchBarStyle.css"]
+        }
+    ]
+}
