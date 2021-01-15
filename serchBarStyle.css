@@ -1,8 +1,25 @@
-#qweqwe {
+#typo_qweqwe {
     display: flex;
-    justify-content: center;
-    position: fixed;
+    align-items: center;
+    flex-direction: column;
+    /* position: fixed; */
     z-index: 99999;
     width: 100%;
     top: 0;
+    left: 0;
+}
+
+#typo_input {
+    background: #fff;
+}
+
+#typo_scriptlist {
+    width: 30vw;
+    /* background: #fcfcfc; */
+    background: #f00;
+    padding: 16px 32px;
+}
+
+.focused {
+    background: #1114;
 }
