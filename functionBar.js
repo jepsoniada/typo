@@ -3,6 +3,14 @@ let temp = document.createElement("template")
 temp.innerHTML = strHtml
 document.body.appendChild(temp.content.firstChild)
 
+const typo = {
+    enabled: false,
+    sugestions: [],
+    focused: 0,
+    update () {
+        document.getElementById("typo_qweqwe").style.display = this.enabled ? "flex" : "none"
+    }
+}
 const scripts = new Object()
 
 scripts["play"] = function () {
@@ -39,44 +47,58 @@ document.addEventListener(`keydown`, e => {
             inputBuffor.push(e.code)
             break
         case "Escape":
-            document.getElementById("typo_qweqwe").style.display = "none"
+            typo.enabled = false
+            typo.update()
         default: 
             inputBuffor.length = 0; break
     }
     let anyShift = (inputBuffor.includes("ShiftLeft") || inputBuffor.includes("ShiftRight"))
     let anyControl = (inputBuffor.includes("ControlLeft") || inputBuffor.includes("ControlRight"))
     if (inputBuffor.includes("KeyK") && anyShift && anyControl) {
-        document.getElementById("typo_qweqwe").style.display = "flex"
+        typo.enabled = true
+        typo.update()
+        sugestionUpdate("")
         document.getElementById("typo_input").focus()
         inputBuffor.length = 0
     }
 })
 
 document.addEventListener("keydown", e => {
-    if (document.querySelector("#typo_scriptlist").children.length > 0) {
-        const focusedSugestions = Array.from(document.querySelector("#typo_scriptlist").children).findIndex(item => item == document.querySelector('#typo_scriptlist .focused'))
+    if (typo.sugestions.length > 0 && typo.enabled) {
         switch (e.code) {
             case "ArrowUp":
                 e.preventDefault()
-                if (focusedSugestions != -1) {
-                    document.querySelector("#typo_scriptlist").children[focusedSugestions].classList.remove("focused")
-                    if (focusedSugestions == 0) {
-                        document.querySelector("#typo_scriptlist").children[document.querySelector("#typo_scriptlist").childElementCount-1].classList.add("focused")
-                    } else {
-                        document.querySelector("#typo_scriptlist").children[focusedSugestions-1].classList.add("focused")
-                    }
+                document.querySelector("#typo_scriptlist").children[typo.focused].classList.remove("focused")
+                if (typo.focused == 0) {
+                    document.querySelector("#typo_scriptlist").children[typo.sugestions.length-1].classList.add("focused")
+                    typo.focused = typo.sugestions.length-1
+                } else {
+                    document.querySelector("#typo_scriptlist").children[typo.focused-1].classList.add("focused")
+                    typo.focused -= 1
                 }
                 break
             case "ArrowDown":
                 e.preventDefault()
-                if (focusedSugestions != -1) {
-                    document.querySelector("#typo_scriptlist").children[focusedSugestions].classList.remove("focused")
-                    if (focusedSugestions == document.querySelector("#typo_scriptlist").childElementCount-1) {
-                        document.querySelector("#typo_scriptlist").children[0].classList.add("focused")
-                    } else {
-                        document.querySelector("#typo_scriptlist").children[focusedSugestions+1].classList.add("focused")
-                    }
+                document.querySelector("#typo_scriptlist").children[typo.focused].classList.remove("focused")
+                if (typo.focused == document.querySelector("#typo_scriptlist").childElementCount-1) {
+                    document.querySelector("#typo_scriptlist").children[0].classList.add("focused")
+                    typo.focused = 0
+                } else {
+                    document.querySelector("#typo_scriptlist").children[typo.focused+1].classList.add("focused")
+                    typo.focused += 1
                 }
+                break
+            case "Tab":
+                e.preventDefault()
+                // e.stopPropagation()  
+                document.querySelector("#typo_input").value = typo.sugestions[typo.focused]
+                sugestionUpdate(typo.sugestions[typo.focused])
+                break
+            case "Enter":
+                scripts[typo.sugestions[typo.focused]]()
+                document.querySelector("#typo_input").value = ""
+                typo.enabled = !1
+                typo.update()
                 break
         }
     }    
@@ -84,22 +106,27 @@ document.addEventListener("keydown", e => {
 
 document.addEventListener("input", e => {
     if (document.querySelector("#typo_input").value == e.target.value ? Object.keys(scripts) : false) {
-        Array.from(document.querySelector("#typo_scriptlist").children).forEach(e => document.querySelector("#typo_scriptlist").removeChild(e))
-        let funcPickComponentStr = `<div class="typo_funcPick"></div>`
-        let temp = document.createElement("template")
-        let searched = Object.keys(scripts).filter(item => {
-            let reg = new RegExp(e.target.value)
-            return (item.match(reg) != null ? true : false)
-        })
-        for (const [i, v] of searched.entries()) {
-            temp.innerHTML += funcPickComponentStr
-            temp.content.children[i].innerText = v
-        }
-        if (temp.content.children.length > 0) {
-            temp.content.children[0].classList.add("focused")
-        }
-        Array.from(temp.content.children).forEach(elem => {
-            document.body.querySelector("#typo_scriptlist").appendChild(elem)
-        })
+        sugestionUpdate(e.target.value)
     }
 })
+
+function sugestionUpdate(strValue) {
+    Array.from(document.querySelector("#typo_scriptlist").children).forEach(item => document.querySelector("#typo_scriptlist").removeChild(item))
+    let funcPickComponentStr = `<div class="typo_funcPick"></div>`
+    let temp = document.createElement("template")
+    typo.sugestions = Object.keys(scripts).filter(item => {
+        let reg = new RegExp(strValue)
+        return (item.match(reg) != null ? true : false)
+    })
+    for (const [i, v] of typo.sugestions.entries()) {
+        temp.innerHTML += funcPickComponentStr
+        temp.content.children[i].innerText = v
+    }
+    if (temp.content.children.length > 0) {
+        temp.content.children[0].classList.add("focused")
+        typo.focused = 0
+    }
+    Array.from(temp.content.children).forEach(elem => {
+        document.body.querySelector("#typo_scriptlist").appendChild(elem)
+    })
+}

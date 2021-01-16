@@ -1,8 +1,8 @@
 #typo_qweqwe {
-    display: flex;
+    display: none;
     align-items: center;
     flex-direction: column;
-    /* position: fixed; */
+    position: fixed;
     z-index: 99999;
     width: 100%;
     top: 0;
