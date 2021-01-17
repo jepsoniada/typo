@@ -3,12 +3,15 @@
     "version": "1.0",
     "description": "alpha",
     "manifest_version": 2,
-    "permissions": [],
+    "permissions": [
+        "storage"
+    ],
     "content_scripts": [
         {
            "matches": ["<all_urls>"],
             "js": ["functionBar.js"],
             "css": ["serchBarStyle.css"]
         }
-    ]
+    ],
+    "options_page": "dist/typoOptions.html"
 }

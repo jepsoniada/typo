@@ -1,0 +1,21 @@
+* {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#app {
+    display: grid;
+    grid: auto / 300px auto;
+    width: 100%;
+    height: 100%;
+    background: #f00;
+}
+
+#sidebar {
+    background: #0000;
+}
+
+#scriptinput {
+    background: #888;
+}
