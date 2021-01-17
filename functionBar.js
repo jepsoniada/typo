@@ -1,4 +1,11 @@
-const strHtml = `<div id='typo_qweqwe'><div><input id="typo_input" placeholder='not search bar yet'/></div><div id='typo_scriptlist'></div></div>`;
+const strHtml = 
+    `<div id='typo'>
+        ${/*<div id="typo_background"/>*/""}
+        <div id="typo_input">
+            <input id="typo_input_elem" placeholder='f' autocomplete="off"/>
+        </div>
+        <div id='typo_scriptlist'/>
+    </div>`;
 let temp = document.createElement("template")
 temp.innerHTML = strHtml
 document.body.appendChild(temp.content.firstChild)
@@ -8,7 +15,7 @@ const typo = {
     sugestions: [],
     focused: 0,
     update () {
-        document.getElementById("typo_qweqwe").style.display = this.enabled ? "flex" : "none"
+        document.getElementById("typo").style.display = this.enabled ? "flex" : "none"
     }
 }
 const scripts = new Object()
@@ -32,6 +39,10 @@ scripts["pause&play"] = function () {
     }
 }
 
+scripts["alexa play despacito"] = function () {
+    window.open("https://youtu.be/J_bMArMJ-f8?t=26")
+}
+
 let inputBuffor = []
 
 document.addEventListener(`keydown`, e => {
@@ -47,7 +58,8 @@ document.addEventListener(`keydown`, e => {
             inputBuffor.push(e.code)
             break
         case "Escape":
-            typo.enabled = false
+            document.querySelector("#typo_input_elem").value = ""
+            typo.enabled = !1
             typo.update()
         default: 
             inputBuffor.length = 0; break
@@ -58,7 +70,7 @@ document.addEventListener(`keydown`, e => {
         typo.enabled = true
         typo.update()
         sugestionUpdate("")
-        document.getElementById("typo_input").focus()
+        document.getElementById("typo_input_elem").focus()
         inputBuffor.length = 0
     }
 })
@@ -91,12 +103,12 @@ document.addEventListener("keydown", e => {
             case "Tab":
                 e.preventDefault()
                 // e.stopPropagation()  
-                document.querySelector("#typo_input").value = typo.sugestions[typo.focused]
+                document.querySelector("#typo_input_elem").value = typo.sugestions[typo.focused]
                 sugestionUpdate(typo.sugestions[typo.focused])
                 break
             case "Enter":
                 scripts[typo.sugestions[typo.focused]]()
-                document.querySelector("#typo_input").value = ""
+                document.querySelector("#typo_input_elem").value = ""
                 typo.enabled = !1
                 typo.update()
                 break
@@ -105,14 +117,14 @@ document.addEventListener("keydown", e => {
 })
 
 document.addEventListener("input", e => {
-    if (document.querySelector("#typo_input").value == e.target.value ? Object.keys(scripts) : false) {
+    if (document.querySelector("#typo_input_elem").value == e.target.value ? Object.keys(scripts) : false) {
         sugestionUpdate(e.target.value)
     }
 })
 
 function sugestionUpdate(strValue) {
     Array.from(document.querySelector("#typo_scriptlist").children).forEach(item => document.querySelector("#typo_scriptlist").removeChild(item))
-    let funcPickComponentStr = `<div class="typo_funcPick"></div>`
+    let funcPickComponentStr = `<div class="typo_scriptlist_script"></div>`
     let temp = document.createElement("template")
     typo.sugestions = Object.keys(scripts).filter(item => {
         let reg = new RegExp(strValue)

@@ -1,4 +1,7 @@
-#typo_qweqwe {
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+/* box-shadow: 0 0 1px 0px white inset, 0 0 1px 0px white; */
+#typo {
+    font: 700 13px Roboto, sans-serif;
     display: none;
     align-items: center;
     flex-direction: column;
@@ -7,17 +10,67 @@
     width: 100%;
     top: 0;
     left: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
 }
 
+/* #typo_background {
+    background: #0004;
+    backdrop-filter: blur(2px);
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+} */
+
 #typo_input {
-    background: #fff;
+    --input-height: 30px;
+    height: var(--input-height);
+    width: 350px;
+    display: flex;
+    justify-content: center;
+    border-radius: var(--input-height) var(--input-height);
+    /* border: 1px solid #0003; */
+    border: 0;
+    margin: 8px 0;
+    background: #fff8;
+    box-shadow: 0 1px 2px 1px #0002;
+    backdrop-filter: blur(50px);
+}
+
+#typo_input_elem {
+    width: calc(350px - var(--input-height));
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: #0000;
+}
+
+#typo_input_elem:focus {
+    outline: 0;
 }
 
 #typo_scriptlist {
+    margin: 0;
+    padding: 16px 24px;
+    border: 0;
     width: 30vw;
+    background: #fff8;
+    backdrop-filter: blur(50px);
+    box-shadow: 0 1px 2px 1px #0002;
     /* background: #fcfcfc; */
-    background: #f00;
-    padding: 16px 32px;
+    /* background: #f00; */
+    border-radius: 15px;
+}
+
+.typo_scriptlist_script {
+    --script-height: 16px;
+    padding: 2px calc(var(--script-height) / 2 + 4px);
+    height: var(--script-height);
+    border-radius: 6px;
+    box-sizing: content-box;
 }
 
 .focused {
