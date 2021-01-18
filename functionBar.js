@@ -79,6 +79,12 @@ document.addEventListener(`keydown`, e => {
         sugestionUpdate("")
         document.getElementById("typo_input_elem").focus()
         inputBuffor.length = 0
+        // new Promise((res, rej) => {
+        //     chrome.storage.sync.get("owo", out => res(out))
+        // }).then( valfromstorage => console.log(valfromstorage["owo"]))
+        new Promise((res, rej) => {
+            chrome.storage.sync.get(null, items => res(Object.keys(items)))
+        }).then( valfromstorage => console.log(valfromstorage))
     }
 })
 

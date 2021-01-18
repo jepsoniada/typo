@@ -18,4 +18,25 @@
 
 #scriptinput {
     background: #888;
+    padding: 20px;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+#fileinput {
+    display: block;
+    padding: 50px;
+    background: #f80;
+}
+
+#scriptName {
+    font-size: 24px;
+    background: #0000;
+    height: 30px;
+}
+
+#scriptName:focus {
+    outline: 0;
 }
