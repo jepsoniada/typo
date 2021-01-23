@@ -12,8 +12,30 @@
     background: #f00;
 }
 
+#scriptName input {
+    font-size: 24px;
+    background: #0000;
+    height: 30px;
+}
+
+#scriptText[noval]::after, #scriptName[noval]::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    background: #f00 !important;
+    display: inline-block;
+    position: relative;
+    left: 5px;
+}
+
 #sidebar {
     background: #0000;
+}
+
+#addScreenBtn {
+    background: #0d0;
+    padding: 10px;
 }
 
 #scriptinput {
@@ -31,12 +53,26 @@ input[type="file"] {
     background: #f80;
 }
 
-#scriptName {
-    font-size: 24px;
-    background: #0000;
-    height: 30px;
-}
-
 #scriptName:focus {
     outline: 0;
+}
+
+#removeScript {
+    display: none;
+    padding: 10px 50px;
+    background: #f00;
+}
+
+#removeScript input {
+    display: none;
+}
+
+#uploadScript {
+    display: inline-block;
+    padding: 10px 50px;
+    background: #0ff;
+}
+
+#uploadScript input {
+    display: none;
 }

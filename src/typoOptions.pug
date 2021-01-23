@@ -5,9 +5,22 @@ html
     body
         #app
             #sidebar
+                #constBtns
+                    #addScreenBtn +__add
+                #scriptList
             #scriptinput
-                input#scriptName(placeholder="name")
+                span#scriptName(noval='')
+                    input(placeholder="name")
                 label#fileinput
                     input(type="file")
-                    #scriptText
+                    #scriptText(noval='')
+                //- label#checkIsCorect
+                    //- button check
+                label#uploadScript
+                    input(type="button")
+                    | upload
+                label#removeScript
+                    //- dead for now
+                    input(type="button")
+                    | remove
     script(src="../options.js")
