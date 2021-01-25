@@ -12,13 +12,36 @@
     background: #f00;
 }
 
+#name {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    --script-name-height: 30px;
+}
+
+.hintBox {
+    margin: 0 8px;
+    padding: 0 16px;
+    border-radius: var(--script-name-height);
+    display: none;
+    place-items: center;
+    background: #0002;
+}
+
+#scriptName {
+    display: flex;
+    flex-direction: row;
+    height: var(--script-name-height);
+}
+
 #scriptName input {
     font-size: 24px;
     background: #0000;
-    height: 30px;
+    height: var(--script-name-height);
 }
 
 #scriptText[noval]::after, #scriptName[noval]::after {
+    --alert-size: 10px;
     content: "";
     width: 10px;
     height: 10px;
@@ -27,6 +50,7 @@
     display: inline-block;
     position: relative;
     left: 5px;
+    top: calc((var(--script-name-height) - var(--alert-size)) / 2);
 }
 
 #sidebar {
@@ -39,7 +63,7 @@
 }
 
 #scriptinput {
-    background: #888;
+    background: #fff;
     padding: 20px;
 }
 
@@ -53,7 +77,7 @@ input[type="file"] {
     background: #f80;
 }
 
-#scriptName:focus {
+#scriptName input:focus {
     outline: 0;
 }
 

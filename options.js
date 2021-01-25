@@ -1,5 +1,44 @@
+// btw 
+// you can use Object.assign({}, toCopy: object) to copy value instead of for..in
+
+// ### example:
+
+// let focusedScript = {focused: ""}
+// scriptsCache = Object.assign({}, focusedScript)
+
+// now scriptsCache is independent of focusedScript
+
+// ### your previous method:
+
+// let focusedScript = {focused: ""}
+// scriptsCache = new Object()
+// for (key in focusedScript) {
+//     scriptsCache[key] = focusedScript[key]
+// }
+
+// change it please ::))
+
 let scriptsCache = new Object()
 const focusedScript = {focused: ""}
+
+const scriptDefaults = {
+    options: `chrome.runtime.sendMessage({type: "openOptions"})`
+}
+// checks is (<input>) inputNode.value is banned then edits outputNode.[innerText, style.display] and returns boolean
+function returnAndDisplayIsValueBanned(inputString, outputNode) {
+    console.log("returnAndDisplayIsValueBanned")
+    console.log(inputString)
+    for (i in scriptDefaults) {
+        if (i == inputString) {
+            console.log("found it!!!")
+            outputNode.style.display = "grid"
+            outputNode.innerText = `name "${inputString}" is banned`
+            return true
+        }
+    }
+    outputNode.style.display = "none"
+    return false
+}
 
 function removeDisplay() {
     const value = document.querySelector("#scriptName input").value
@@ -20,7 +59,7 @@ function scriptHeadReactionForClick(link) {
     document.querySelector("#fileinput input[type='file").value = ""
     document.querySelector("#scriptText").innerText = scriptsCache[link]
     removeDisplay()
-    updateScriptNameAlert()
+    updateScriptNameAlert(true)
     if (document.querySelector("#scriptText").hasAttribute("noval")) {
         document.querySelector("#scriptText").removeAttribute('noval')
     }
@@ -29,18 +68,20 @@ function scriptHeadReactionForClick(link) {
 async function sideBarFill(change) {
     console.log("STORAGE_UPDATE::")
     console.log(change)
-    new Promise(async (res, rej) => {
-        await chrome.storage.sync.get(null, val => res(val))
+    new Promise((res, rej) => {
+        chrome.storage.sync.get(null, val => res(val))
     }).then( valfromstorage => {
         // for (key in valfromstorage) {
         //     scriptsCache[key] = valfromstorage[key]
         // }
         scriptsCache = new Object()
         for (key in valfromstorage) {
-            if (key.search(/typo/gi)) {
+            console.log(key.search(/TYPO_PRIVATE/gi))
+            if (key.search(/TYPO_PRIVATE/gi) < 0) {
                 scriptsCache[key] = valfromstorage[key]
             }
         }
+        console.log("scriptsCache: ", scriptsCache)
         // scriptsCache = valfromstorage
         document.querySelector("#sidebar #scriptList").innerHTML = ''
         console.log(JSON.stringify(scriptsCache))
@@ -64,6 +105,7 @@ async function sideBarFill(change) {
 // actually can change on update; that can be updated
 chrome.storage.sync.onChanged.addListener(sideBarFill)
 
+// inits change event after page load
 document.addEventListener('readystatechange', () => {
     if (document.readyState == "complete") {
         chrome.storage.sync.set({"TYPO_PRIVATE dummyinit": Math.random()})
@@ -85,7 +127,15 @@ document.querySelector("#fileinput input").addEventListener("input", e => {
 })
 
 function isScriptDataFilled () {
-    if (document.querySelector("#scriptName input").value.length > 0 && (document.querySelector("#fileinput input[type='file").value.length > 0 || document.querySelector("#scriptText").innerText.length > 0)) {
+    // let arr = [document.querySelector("#scriptName input").value.length > 0, (document.querySelector("#fileinput input[type='file").value.length > 0 || document.querySelector("#scriptText").innerText.length > 0), document || false]
+    // const [isNameAdded, isFileAdded, isNameBanned] = arr
+    const [ isNameAdded, isFileAdded, isNameBanned ] = [
+        document.querySelector("#scriptName input").value.length > 0,
+        document.querySelector("#fileinput input[type='file").value.length > 0 || document.querySelector("#scriptText").innerText.length > 0,
+        returnAndDisplayIsValueBanned(document.querySelector("#scriptName input").value, document.querySelector("#name .hintBox"))
+    ]
+    // if (document.querySelector("#scriptName input").value.length > 0 && (document.querySelector("#fileinput input[type='file").value.length > 0 || document.querySelector("#scriptText").innerText.length > 0)) {
+    if (isNameAdded && isFileAdded && !isNameBanned) {
         return true
     } else {
         return false
@@ -105,7 +155,7 @@ document.querySelector("#uploadScript").addEventListener("click", async () => {
         // objToSet[document.querySelector("#scriptName input").value] = document.querySelector("#scriptText").innerText
         await chrome.storage.sync.set(objToSet)
         scriptInputClear()
-        updateScriptNameAlert()
+        updateScriptNameAlert(!returnAndDisplayIsValueBanned(document.querySelector("#scriptName input").value, document.querySelector("#name .hintBox")))
         updateScriptFileAlert()
         removeDisplay()
     }
@@ -135,8 +185,8 @@ document.querySelector("#removeScript").addEventListener("mousedown", () => {
 //     }
 // }
 
-function updateScriptNameAlert() {
-    if (document.querySelector("#scriptName input").value.length > 0) {
+function updateScriptNameAlert (boolVal) {
+    if (document.querySelector("#scriptName input").value.length > 0 && boolVal) {
         document.querySelector("#scriptName").removeAttribute("noval")
     } else {
         document.querySelector("#scriptName").setAttribute("noval", "")
@@ -153,7 +203,7 @@ function updateScriptFileAlert() {
 
 // empty input info
 document.querySelector("#scriptName input").addEventListener("input", () => {
-    updateScriptNameAlert()
+    updateScriptNameAlert(!returnAndDisplayIsValueBanned(document.querySelector("#scriptName input").value, document.querySelector("#name .hintBox")))
     removeDisplay()
 })
 document.querySelector("#fileinput input[type='file").addEventListener('input', () => {
@@ -168,6 +218,6 @@ document.querySelector("#fileinput input[type='file").addEventListener('input', 
 // "showing" add script page
 document.querySelector("#addScreenBtn").addEventListener("click", () => {
     scriptInputClear()
-    updateScriptNameAlert()
+    updateScriptNameAlert(true)
     updateScriptFileAlert()
 })

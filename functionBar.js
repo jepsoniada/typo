@@ -1,3 +1,12 @@
+const scriptDefaults = {
+    options: `chrome.runtime.sendMessage({type: "openOptions"})`
+}
+// let scriptsCache = new Object()
+let scriptsCache = new Object()
+for (item in scriptDefaults) {
+    scriptsCache[item] = scriptDefaults[item]
+}
+
 const strHtml = 
     `<div id="typo">
     <div id="typo_appbar">
@@ -25,33 +34,34 @@ const typo = {
         document.getElementById("typo").style.display = this.enabled ? "flex" : "none"
     }
 }
-const scripts = new Object()
+// const scripts = new Object()
 
-scripts["play"] = function () {
-    if (document.querySelectorAll("video").length > 0) {
-        document.querySelector("video").play()
-    }
-}
+// scripts["play"] = function () {
+//     if (document.querySelectorAll("video").length > 0) {
+//         document.querySelector("video").play()
+//     }
+// }
 
-scripts["pause"] = function () {
-    if (document.querySelectorAll("video").length > 0) {
-        document.querySelector("video").pause()
-    }
-}
+// scripts["pause"] = function () {
+//     if (document.querySelectorAll("video").length > 0) {
+//         document.querySelector("video").pause()
+//     }
+// }
 
-scripts["pause&play"] = function () {
-    if (document.querySelectorAll("video").length > 0) {
-        document.querySelector("video").pause()
-        document.querySelector("video").play()
-    }
-}
+// scripts["pause&play"] = function () {
+//     if (document.querySelectorAll("video").length > 0) {
+//         document.querySelector("video").pause()
+//         document.querySelector("video").play()
+//     }
+// }
 
-scripts["alexa play despacito"] = function () {
-    window.open("https://youtu.be/J_bMArMJ-f8?t=26")
-}
+// scripts["alexa play despacito"] = function () {
+//     window.open("https://youtu.be/J_bMArMJ-f8?t=26")
+// }
 
 let inputBuffor = []
 
+// open menu
 document.addEventListener(`keydown`, e => {
     switch (e.code) {
         case "KeyK":
@@ -74,20 +84,32 @@ document.addEventListener(`keydown`, e => {
     let anyShift = (inputBuffor.includes("ShiftLeft") || inputBuffor.includes("ShiftRight"))
     let anyControl = (inputBuffor.includes("ControlLeft") || inputBuffor.includes("ControlRight"))
     if (inputBuffor.includes("KeyK") && anyShift && anyControl) {
-        typo.enabled = true
-        typo.update()
-        sugestionUpdate("")
-        document.getElementById("typo_input_elem").focus()
-        inputBuffor.length = 0
+        new Promise((res, rej) => {
+            chrome.storage.sync.get(null, items => res(items))
+        }).then( valfromstorage => {
+            scriptsCache = new Object()
+            for (item in scriptDefaults) {
+                scriptsCache[item] = scriptDefaults[item]
+            }
+            for (key in valfromstorage) {
+                if (key.search(/TYPO_PRIVATE/gi) < 0) {
+                    scriptsCache[key] = valfromstorage[key]
+                }
+            }
+            // console.log(scriptsCache)
+            typo.enabled = true
+            typo.update()
+            sugestionUpdate("")
+            document.getElementById("typo_input_elem").focus()
+            inputBuffor.length = 0
+        })
         // new Promise((res, rej) => {
         //     chrome.storage.sync.get("owo", out => res(out))
         // }).then( valfromstorage => console.log(valfromstorage["owo"]))
-        new Promise((res, rej) => {
-            chrome.storage.sync.get(null, items => res(Object.keys(items)))
-        }).then( valfromstorage => console.log(valfromstorage))
     }
 })
 
+// chossing scripts handler
 document.addEventListener("keydown", e => {
     if (typo.sugestions.length > 0 && typo.enabled) {
         switch (e.code) {
@@ -120,7 +142,11 @@ document.addEventListener("keydown", e => {
                 sugestionUpdate(typo.sugestions[typo.focused])
                 break
             case "Enter":
-                scripts[typo.sugestions[typo.focused]]()
+                try {
+                    eval(scriptsCache[typo.sugestions[typo.focused]])
+                } catch {
+                    console.error("TYPO: something went wrong")
+                }
                 document.querySelector("#typo_input_elem").value = ""
                 typo.enabled = !1
                 typo.update()
@@ -130,7 +156,7 @@ document.addEventListener("keydown", e => {
 })
 
 document.addEventListener("input", e => {
-    if (document.querySelector("#typo_input_elem").value == e.target.value ? Object.keys(scripts) : false) {
+    if (document.querySelector("#typo_input_elem").value == e.target.value ? Object.keys(scriptsCache) : false) {
         sugestionUpdate(e.target.value)
     }
 })
@@ -139,7 +165,7 @@ function sugestionUpdate(strValue) {
     Array.from(document.querySelector("#typo_scriptlist").children).forEach(item => document.querySelector("#typo_scriptlist").removeChild(item))
     let funcPickComponentStr = `<div class="typo_scriptlist_script"></div>`
     let temp = document.createElement("template")
-    typo.sugestions = Object.keys(scripts).filter(item => {
+    typo.sugestions = Object.keys(scriptsCache).filter(item => {
         let reg = new RegExp(strValue)
         return (item.match(reg) != null ? true : false)
     })
@@ -155,3 +181,7 @@ function sugestionUpdate(strValue) {
         document.body.querySelector("#typo_scriptlist").appendChild(elem)
     })
 }
+
+document.querySelector("#typo_options").addEventListener("click", () => {
+    chrome.runtime.sendMessage({type: "openOptions"})
+})
