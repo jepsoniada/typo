@@ -1,22 +1,3 @@
-// btw 
-// you can use Object.assign({}, toCopy: object) to copy value instead of for..in
-
-// ### example:
-
-// let focusedScript = {focused: ""}
-// scriptsCache = Object.assign({}, focusedScript)
-
-// now scriptsCache is independent of focusedScript
-
-// ### your previous method:
-
-// let focusedScript = {focused: ""}
-// scriptsCache = new Object()
-// for (key in focusedScript) {
-//     scriptsCache[key] = focusedScript[key]
-// }
-
-// change it please ::))
 
 let scriptsCache = new Object()
 const focusedScript = {focused: ""}
