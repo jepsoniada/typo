@@ -14,7 +14,7 @@
             "css": ["serchBarStyle.css"]
         }
     ],
-    "options_page": "dist/typoOptions.html",
+    "options_page": "./dist/typoOptions.html",
     "background": {
         "scripts": ["bg.js"]
     }

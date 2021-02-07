@@ -1,15 +1,13 @@
+import scriptDefaults from '../ScriptDefaults.js'
 
 let scriptsCache = new Object()
 const focusedScript = {focused: ""}
 
-const scriptDefaults = {
-    options: `chrome.runtime.sendMessage({type: "openOptions"})`
-}
 // checks is (<input>) inputNode.value is banned then edits outputNode.[innerText, style.display] and returns boolean
 function returnAndDisplayIsValueBanned(inputString, outputNode) {
     console.log("returnAndDisplayIsValueBanned")
     console.log(inputString)
-    for (i in scriptDefaults) {
+    for (let i in scriptDefaults) {
         if (i == inputString) {
             console.log("found it!!!")
             outputNode.style.display = "grid"
@@ -33,7 +31,8 @@ function removeDisplay() {
     // inline-block | none
 }
 
-function scriptHeadReactionForClick(link) {
+function scriptHeadReactionForClick(target) {
+    let link = target.path.find(e => e.className == "scriptHead").innerText
     console.log(link, ':', scriptsCache[link], '\n')
     focusedScript.focused = link
     document.querySelector("#scriptName input").value = link
@@ -52,27 +51,24 @@ async function sideBarFill(change) {
     new Promise((res, rej) => {
         chrome.storage.sync.get(null, val => res(val))
     }).then( valfromstorage => {
-        // for (key in valfromstorage) {
-        //     scriptsCache[key] = valfromstorage[key]
-        // }
         scriptsCache = new Object()
-        for (key in valfromstorage) {
+        for (let key in valfromstorage) {
             console.log(key.search(/TYPO_PRIVATE/gi))
             if (key.search(/TYPO_PRIVATE/gi) < 0) {
                 scriptsCache[key] = valfromstorage[key]
             }
         }
         console.log("scriptsCache: ", scriptsCache)
-        // scriptsCache = valfromstorage
         document.querySelector("#sidebar #scriptList").innerHTML = ''
         console.log(JSON.stringify(scriptsCache))
         Object.keys(scriptsCache).forEach(elem => {
             if (elem.search(/TYPO_PRIVATE/) < 0) {
-                const tempStr = `<div class="scriptHead" onclick="scriptHeadReactionForClick(\'${elem}\')"></div>`
+                const tempStr = `<div class="scriptHead"></div>`
                 console.log(elem)
                 let temp = document.createElement("template")
                 temp.innerHTML = tempStr
                 temp.content.firstChild.innerText = elem
+                temp.content.firstChild.addEventListener("click", scriptHeadReactionForClick)
                 document.querySelector("#sidebar #scriptList").appendChild(temp.content.firstChild)
             }
         })
@@ -133,7 +129,6 @@ function scriptInputClear() {
 document.querySelector("#uploadScript").addEventListener("click", async () => {
     if (isScriptDataFilled()) {
         const objToSet = new Object({[document.querySelector("#scriptName input").value]: document.querySelector("#scriptText").innerText})
-        // objToSet[document.querySelector("#scriptName input").value] = document.querySelector("#scriptText").innerText
         await chrome.storage.sync.set(objToSet)
         scriptInputClear()
         updateScriptNameAlert(!returnAndDisplayIsValueBanned(document.querySelector("#scriptName input").value, document.querySelector("#name .hintBox")))
@@ -144,27 +139,8 @@ document.querySelector("#uploadScript").addEventListener("click", async () => {
 
 document.querySelector("#removeScript").addEventListener("mousedown", () => {
     console.log(`should remove`, focusedScript.focused)
-    chrome.storage.sync.remove(focusedScript.focused, () => {
-        // focusedScript.focused = ""
-        // removeDisplay()
-    })
-    // chrome.storage.sync.set({"TYPO_PRIVATE dummyinit": Math.random()})
+    chrome.storage.sync.remove(focusedScript.focused, () => {})
 })
-
-// function updateInputAlerts () {
-//     if (document.querySelector("#scriptName input").value.length > 0) {
-//         document.querySelector("#scriptName").removeAttribute("noval")
-//     } else {
-//         document.querySelector("#scriptName").setAttribute("noval", "")
-//     }
-
-//     // console.log(typeof document.querySelector("#fileinput input[type='file").value)
-//     if (document.querySelector("#fileinput input[type='file").value.length > 0) {
-//         document.querySelector("#scriptText").removeAttribute("noval")
-//     } else {
-//         document.querySelector("#scriptText").setAttribute("noval", "")
-//     }
-// }
 
 function updateScriptNameAlert (boolVal) {
     if (document.querySelector("#scriptName input").value.length > 0 && boolVal) {
@@ -190,11 +166,6 @@ document.querySelector("#scriptName input").addEventListener("input", () => {
 document.querySelector("#fileinput input[type='file").addEventListener('input', () => {
     updateScriptFileAlert()
 })
-
-// document.addEventListener("input", () => {
-//     updateScriptNameAlert()
-//     updateScriptFileAlert()
-// })
 
 // "showing" add script page
 document.querySelector("#addScreenBtn").addEventListener("click", () => {

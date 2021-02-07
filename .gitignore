@@ -1,4 +1,5 @@
 ex*
 ol*
 test scripts/
+dist/
 node_modules

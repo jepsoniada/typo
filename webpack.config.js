@@ -1,10 +1,22 @@
+const HTMLwpPlug = require("html-webpack-plugin")
+
 module.exports = {
-    entry: "./functionBar.js",
-    mode: "development",
-    output: {
-        // path: './dist/',
-        filename: "functionBar.js",
+    entry: {
+        funcBar: { import: "./functionBar.js", filename: "functionBar.js" },
+        optionsJs: { import: "./src/options.js", filename: "options.js" },
     },
+    mode: "development",
+    devtool: false,
+    // output: {
+    //     // path: './dist/',
+    //     filename: "functionBar.js",
+    // },
+    plugins: [
+        new HTMLwpPlug({
+            template: './src/typoOptions.pug',
+            filename: "typoOptions.html",
+        }),
+    ],
     module: {
         rules: [
             {
@@ -19,7 +31,9 @@ module.exports = {
                 use: {
                     loader: "babel-loader",
                     options: {
-                        presets: ['@babel/preset-env']
+                        sourceMap: false,
+                        babelrc: false,
+                        presets: [["@babel/preset-env", {targets: {chrome: "89",}}]],
                     }
                 }
             }
