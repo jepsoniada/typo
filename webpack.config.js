@@ -15,6 +15,7 @@ module.exports = {
         new HTMLwpPlug({
             template: './src/typoOptions.pug',
             filename: "typoOptions.html",
+            excludeChunks: ["funcBar"],
         }),
     ],
     module: {
