@@ -163,7 +163,7 @@ document.querySelector("#scriptName input").addEventListener("input", () => {
     updateScriptNameAlert(!returnAndDisplayIsValueBanned(document.querySelector("#scriptName input").value, document.querySelector("#name .hintBox")))
     removeDisplay()
 })
-document.querySelector("#fileinput input[type='file").addEventListener('input', () => {
+document.querySelector("#fileinput input[type='file']").addEventListener('input', () => {
     updateScriptFileAlert()
 })
 

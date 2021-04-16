@@ -31,11 +31,11 @@ module.exports = {
                 exclude: /node_modules/,
                 use: {
                     loader: "babel-loader",
-                    options: {
-                        sourceMap: false,
-                        babelrc: false,
-                        presets: [["@babel/preset-env", {targets: {chrome: "89",}}]],
-                    }
+                    // options: {
+                    //     sourceMap: false,
+                    //     babelrc: false,
+                    //     presets: [["@babel/preset-env", {targets: "last 1 version"}]],
+                    // }
                 }
             }
         ]

@@ -46,31 +46,29 @@ const typo = {
 //     window.open("https://youtu.be/J_bMArMJ-f8?t=26")
 // }
 
-let inputBuffor = []
+// let inputBuffor = []
 
 // open menu
-document.addEventListener(`keydown`, e => {
-    switch (e.code) {
-        case "KeyK":
-        case "ShiftLeft":
-        case "ShiftRight":
-        case "ControlLeft":
-        case "ControlRight":
-            if ((inputBuffor.filter(i => i == e.code)).length > 0) {
-                inputBuffor.length = 0
-            }
-            inputBuffor.push(e.code)
-            break
-        case "Escape":
-            document.querySelector("#typo_input_elem").value = ""
-            typo.enabled = !1
-            typo.update()
-        default: 
-            inputBuffor.length = 0; break
-    }
-    let anyShift = (inputBuffor.includes("ShiftLeft") || inputBuffor.includes("ShiftRight"))
-    let anyControl = (inputBuffor.includes("ControlLeft") || inputBuffor.includes("ControlRight"))
-    if (inputBuffor.includes("KeyK") && anyShift && anyControl) {
+document.addEventListener("keyup",e => {
+    // switch (e.code) {
+    //     case "KeyK":
+    //     case "ShiftLeft":
+    //     case "ShiftRight":
+    //     case "ControlLeft":
+    //     case "ControlRight":
+    //         if ((inputBuffor.filter(i => i == e.code)).length > 0) {
+    //             inputBuffor.length = 0
+    //         }
+    //         inputBuffor.push(e.code)
+    //         break
+    //     case "Escape":
+    //         document.querySelector("#typo_input_elem").value = ""
+    //         typo.enabled = !1
+    //         typo.update()
+    //     default: 
+    //         inputBuffor.length = 0; break
+    // }
+    if (e.code == "KeyK" && e.ctrlKey && e.shiftKey) {
         new Promise((res, rej) => {
             chrome.storage.sync.get(null, items => res(items))
         }).then( valfromstorage => {
@@ -85,12 +83,37 @@ document.addEventListener(`keydown`, e => {
             typo.update()
             sugestionUpdate("")
             document.getElementById("typo_input_elem").focus()
-            inputBuffor.length = 0
         })
-        // new Promise((res, rej) => {
-        //     chrome.storage.sync.get("owo", out => res(out))
-        // }).then( valfromstorage => console.log(valfromstorage["owo"]))
+    } else if (e.key == "Escape") {
+        document.querySelector("#typo_input_elem").value = ""
+        typo.enabled = !1
+        typo.update()
     }
+
+
+    // let anyShift = (inputBuffor.includes("ShiftLeft") || inputBuffor.includes("ShiftRight"))
+    // let anyControl = (inputBuffor.includes("ControlLeft") || inputBuffor.includes("ControlRight"))
+    // if (inputBuffor.includes("KeyK") && anyShift && anyControl) {
+    //     new Promise((res, rej) => {
+    //         chrome.storage.sync.get(null, items => res(items))
+    //     }).then( valfromstorage => {
+    //         scriptsCache = Object.assign({}, scriptDefaults)
+    //         for (let key in valfromstorage) {
+    //             if (key.search(/TYPO_PRIVATE/gi) < 0) {
+    //                 scriptsCache[key] = valfromstorage[key]
+    //             }
+    //         }
+    //         // console.log(scriptsCache)
+    //         typo.enabled = true
+    //         typo.update()
+    //         sugestionUpdate("")
+    //         document.getElementById("typo_input_elem").focus()
+    //         inputBuffor.length = 0
+    //     })
+    //     // new Promise((res, rej) => {
+    //     //     chrome.storage.sync.get("owo", out => res(out))
+    //     // }).then( valfromstorage => console.log(valfromstorage["owo"]))
+    // }
 })
 
 // chossing scripts handler

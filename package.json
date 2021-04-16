@@ -4,7 +4,7 @@
   "description": "",
   "main": "bg.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "npx webpack"
   },
   "keywords": [],
   "author": "",
@@ -14,9 +14,11 @@
     "@babel/preset-env": "^7.12.11",
     "babel-loader": "^8.2.2",
     "html-webpack-plugin": "^5.0.0",
-    "pug": "^3.0.0",
+    "pug": "^3.0.2",
     "pug-loader": "^2.4.0",
-    "webpack": "^5.19.0",
-    "webpack-cli": "^4.4.0"
+    "webpack": "^5.19.0"
+  },
+  "devDependencies": {
+    "webpack-cli": "^4.6.0"
   }
 }
