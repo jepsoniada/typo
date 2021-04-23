@@ -14,10 +14,9 @@ body {
     grid: auto / 300px auto;
     width: 100%;
     height: 100%;
-    background: #f00;
 }
 
-#name {
+#script-page .name {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -45,6 +44,27 @@ body {
     height: var(--script-name-height);
 }
 
+#scriptText, #scriptText * {
+    --scriptText-font-size: 16px;
+    --scriptText-line-height: 20px;
+    color: black !important;
+    line-height: var(--scriptText-line-height);
+}
+
+#scriptText {
+    font-size: var(--scriptText-font-size);
+    min-height: var(--scriptText-line-height);
+}
+
+#scriptText * {
+    font-size: 1em;
+    background: initial !important;
+    justify-content: initial;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+}
+
 #scriptText[noval]::after, #scriptName[noval]::after {
     --alert-size: 10px;
     content: "";
@@ -55,31 +75,53 @@ body {
     display: inline-block;
     position: relative;
     left: 5px;
+}
+
+#scriptText[noval]::after {
+    /* top: 0; */
+    /* bottom: calc((var(--scriptText-font-size) - var(--alert-size)) / 2); */
+    top: calc((var(--scriptText-line-height) - var(--alert-size)) / 2);
+}
+
+#scriptName[noval]::after {
     top: calc((var(--script-name-height) - var(--alert-size)) / 2);
 }
 
-#sidebar {
-    background: #0000;
+#scriptText:focus {
+    outline: initial;
 }
 
-#addScreenBtn {
+#sidebar {
+    background: #f00;
+}
+
+#add-script-btn {
     background: #0d0;
     padding: 10px;
 }
 
-#scriptinput {
+#script-page {
     background: #fff;
     padding: 20px;
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
 }
 
 input[type="file"] {
     display: none;
 }
 
-#fileinput {
+#script-input {
     display: block;
     padding: 50px;
     background: #f80;
+}
+
+#file-upload {
+    height: 100px;
+    width: 100px;
+    background: #f0f;
 }
 
 #scriptName input:focus {

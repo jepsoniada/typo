@@ -4,23 +4,21 @@ head
 body
     #app
         #sidebar
-            #constBtns
-                #addScreenBtn +__add
-            #scriptList
-        #scriptinput
-            #name
+            #const-btns
+                #add-script-btn +__add
+            #script-list
+        #script-page
+            .name
                 span#scriptName(noval='')
                     input(placeholder="name")
                 .hintBox uwu
-            label#fileinput
-                input(type="file")
-                #scriptText(noval='')
-            //- label#checkIsCorect
-                //- button check
+            #script-input
+                //- label#file-upload
+                //-     input(type="file")
+                #scriptText(noval='' contenteditable)
             label#uploadScript
                 input(type="button")
                 | upload
             label#removeScript
-                //- dead for now
                 input(type="button")
                 | remove

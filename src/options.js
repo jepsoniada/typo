@@ -36,7 +36,7 @@ function scriptHeadReactionForClick(target) {
     console.log(link, ':', scriptsCache[link], '\n')
     focusedScript.focused = link
     document.querySelector("#scriptName input").value = link
-    document.querySelector("#fileinput input[type='file").value = ""
+    // document.querySelector("#script-input input[type='file").value = ""
     document.querySelector("#scriptText").innerText = scriptsCache[link]
     removeDisplay()
     updateScriptNameAlert(true)
@@ -59,7 +59,7 @@ async function sideBarFill(change) {
             }
         }
         console.log("scriptsCache: ", scriptsCache)
-        document.querySelector("#sidebar #scriptList").innerHTML = ''
+        document.querySelector("#sidebar #script-list").innerHTML = ''
         console.log(JSON.stringify(scriptsCache))
         Object.keys(scriptsCache).forEach(elem => {
             if (elem.search(/TYPO_PRIVATE/) < 0) {
@@ -69,7 +69,7 @@ async function sideBarFill(change) {
                 temp.innerHTML = tempStr
                 temp.content.firstChild.innerText = elem
                 temp.content.firstChild.addEventListener("click", scriptHeadReactionForClick)
-                document.querySelector("#sidebar #scriptList").appendChild(temp.content.firstChild)
+                document.querySelector("#sidebar #script-list").appendChild(temp.content.firstChild)
             }
         })
         if (Object.keys(change).length == 1) {
@@ -79,39 +79,18 @@ async function sideBarFill(change) {
     })
 }
 
-// actually can change on update; that can be updated
 chrome.storage.sync.onChanged.addListener(sideBarFill)
 
-// inits change event after page load
-document.addEventListener('readystatechange', () => {
-    if (document.readyState == "complete") {
-        chrome.storage.sync.set({"TYPO_PRIVATE dummyinit": Math.random()})
-    }
-})
-
-// file input to text convertion
-document.querySelector("#fileinput input").addEventListener("input", e => {
-    let file = e.target.files[0]
-    
-    const textblob = new Blob([file])
-    textblob.text().then(text => document.querySelector("#scriptText").innerText = text)
-
-    // const reader = new FileReader();
-    // reader.addEventListener('load', (event) => {
-    //     console.log(event.target.result);
-    // })
-    // reader.readAsText(file)
-})
-
 function isScriptDataFilled () {
-    // let arr = [document.querySelector("#scriptName input").value.length > 0, (document.querySelector("#fileinput input[type='file").value.length > 0 || document.querySelector("#scriptText").innerText.length > 0), document || false]
+    // let arr = [document.querySelector("#scriptName input").value.length > 0, (document.querySelector("#script-input input[type='file").value.length > 0 || document.querySelector("#scriptText").innerText.length > 0), document || false]
     // const [isNameAdded, isFileAdded, isNameBanned] = arr
     const [ isNameAdded, isFileAdded, isNameBanned ] = [
         document.querySelector("#scriptName input").value.length > 0,
-        document.querySelector("#fileinput input[type='file").value.length > 0 || document.querySelector("#scriptText").innerText.length > 0,
-        returnAndDisplayIsValueBanned(document.querySelector("#scriptName input").value, document.querySelector("#name .hintBox"))
+        // document.querySelector("#script-input input[type='file").value.length > 0 || document.querySelector("#scriptText").innerText.length > 0,
+        document.querySelector("#scriptText").innerText.length > 0,
+        returnAndDisplayIsValueBanned(document.querySelector("#scriptName input").value, document.querySelector("#script-page .name .hintBox"))
     ]
-    // if (document.querySelector("#scriptName input").value.length > 0 && (document.querySelector("#fileinput input[type='file").value.length > 0 || document.querySelector("#scriptText").innerText.length > 0)) {
+    // if (document.querySelector("#scriptName input").value.length > 0 && (document.querySelector("#script-input input[type='file").value.length > 0 || document.querySelector("#scriptText").innerText.length > 0)) {
     if (isNameAdded && isFileAdded && !isNameBanned) {
         return true
     } else {
@@ -121,26 +100,9 @@ function isScriptDataFilled () {
 
 function scriptInputClear() {
     document.querySelector("#scriptName input").value = ""
-    document.querySelector("#fileinput input[type='file").value = ""
+    // document.querySelector("#script-input input[type='file").value = ""
     document.querySelector("#scriptText").innerText = ''
 }
-
-// uploads script to storage
-document.querySelector("#uploadScript").addEventListener("click", async () => {
-    if (isScriptDataFilled()) {
-        const objToSet = new Object({[document.querySelector("#scriptName input").value]: document.querySelector("#scriptText").innerText})
-        await chrome.storage.sync.set(objToSet)
-        scriptInputClear()
-        updateScriptNameAlert(!returnAndDisplayIsValueBanned(document.querySelector("#scriptName input").value, document.querySelector("#name .hintBox")))
-        updateScriptFileAlert()
-        removeDisplay()
-    }
-})
-
-document.querySelector("#removeScript").addEventListener("mousedown", () => {
-    console.log(`should remove`, focusedScript.focused)
-    chrome.storage.sync.remove(focusedScript.focused, () => {})
-})
 
 function updateScriptNameAlert (boolVal) {
     if (document.querySelector("#scriptName input").value.length > 0 && boolVal) {
@@ -151,7 +113,8 @@ function updateScriptNameAlert (boolVal) {
 }
 
 function updateScriptFileAlert() {
-    if (document.querySelector("#fileinput input[type='file").value.length > 0) {
+    if (document.querySelector("#scriptText").innerText.length > 0) {
+    // if (document.querySelector("#script-input input[type='file").value.length > 0 || document.querySelector("#scriptText").innerText.length > 0) {
         document.querySelector("#scriptText").removeAttribute("noval")
     } else {
         document.querySelector("#scriptText").setAttribute("noval", "")
@@ -160,16 +123,63 @@ function updateScriptFileAlert() {
 
 // empty input info
 document.querySelector("#scriptName input").addEventListener("input", () => {
-    updateScriptNameAlert(!returnAndDisplayIsValueBanned(document.querySelector("#scriptName input").value, document.querySelector("#name .hintBox")))
+    updateScriptNameAlert(!returnAndDisplayIsValueBanned(document.querySelector("#scriptName input").value, document.querySelector("#script-page .name .hintBox")))
     removeDisplay()
 })
-document.querySelector("#fileinput input[type='file']").addEventListener('input', () => {
-    updateScriptFileAlert()
-})
+// document.querySelector("#script-input input[type='file']").addEventListener('input', () => {
+//     updateScriptFileAlert()
+// })
 
 // "showing" add script page
-document.querySelector("#addScreenBtn").addEventListener("click", () => {
+document.querySelector("#add-script-btn").addEventListener("click", () => {
     scriptInputClear()
     updateScriptNameAlert(true)
     updateScriptFileAlert()
+})
+
+// inits change event after page load
+document.addEventListener('readystatechange', () => {
+    if (document.readyState == "complete") {
+        sideBarFill(new Object())
+    }
+})
+
+// file input to text convertion
+// document.querySelector("#script-input input").addEventListener("input", e => {
+//     let file = e.target.files[0]
+    
+//     const textblob = new Blob([file])
+//     textblob.text().then(text => document.querySelector("#scriptText").innerText = text)
+
+//     // const reader = new FileReader();
+//     // reader.addEventListener('load', (event) => {
+//     //     console.log(event.target.result);
+//     // })
+//     // reader.readAsText(file)
+// })
+
+document.querySelector("#script-input").addEventListener("click", e => {
+    document.querySelector("#scriptText").focus()
+})
+
+document.querySelector("#scriptText").addEventListener("input", e => {
+    updateScriptFileAlert()
+})
+
+// uploads script to storage
+document.querySelector("#uploadScript").addEventListener("click", async () => {
+    if (isScriptDataFilled()) {
+        const objToSet = new Object({[document.querySelector("#scriptName input").value]: document.querySelector("#scriptText").innerText})
+        await chrome.storage.sync.set(objToSet)
+        scriptInputClear()
+        updateScriptNameAlert(!returnAndDisplayIsValueBanned(document.querySelector("#scriptName input").value, document.querySelector("#script-page .name .hintBox")))
+        updateScriptFileAlert()
+        removeDisplay()
+    }
+})
+
+// removes script to storage
+document.querySelector("#removeScript").addEventListener("mousedown", () => {
+    console.log(`should remove`, focusedScript.focused)
+    chrome.storage.sync.remove(focusedScript.focused, () => {})
 })
