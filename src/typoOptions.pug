@@ -13,9 +13,15 @@ body
                     input(placeholder="name")
                 .hintBox uwu
             #script-input
-                //- label#file-upload
-                //-     input(type="file")
                 #scriptText(noval='' contenteditable)
+                .input-sidebar
+                    label#file-upload
+                        | &#x5dd;
+                        input(type="file")
+            //- #script-input
+            //-     //- label#file-upload
+            //-     //-     input(type="file")
+            //-     #scriptText(noval='' contenteditable)
             label#uploadScript
                 input(type="button")
                 | upload

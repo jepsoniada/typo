@@ -52,6 +52,9 @@ body {
 }
 
 #scriptText {
+    padding: 50px;
+    background: #f80;
+    flex-grow: 1;
     font-size: var(--scriptText-font-size);
     min-height: var(--scriptText-line-height);
 }
@@ -91,6 +94,12 @@ body {
     outline: initial;
 }
 
+
+.input-sidebar {
+    width: 40px;
+    background: #f000;
+}
+
 #sidebar {
     background: #f00;
 }
@@ -113,15 +122,23 @@ input[type="file"] {
 }
 
 #script-input {
-    display: block;
-    padding: 50px;
-    background: #f80;
+    display: flex;
+    gap: 8px;
 }
 
 #file-upload {
-    height: 100px;
-    width: 100px;
-    background: #f0f;
+    --file-upload-size: 40px;
+    height: var(--file-upload-size);
+    width: var(--file-upload-size);
+    border-radius: 16px;
+    display: grid;
+    place-content: center;
+    /* background: #0002; */
+    box-shadow: 0 0 4px #0005;
+}
+
+#file-upload input[type='file'] {
+    display: none;
 }
 
 #scriptName input:focus {

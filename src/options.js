@@ -135,6 +135,7 @@ document.querySelector("#add-script-btn").addEventListener("click", () => {
     scriptInputClear()
     updateScriptNameAlert(true)
     updateScriptFileAlert()
+    removeDisplay()
 })
 
 // inits change event after page load
@@ -145,21 +146,19 @@ document.addEventListener('readystatechange', () => {
 })
 
 // file input to text convertion
-// document.querySelector("#script-input input").addEventListener("input", e => {
-//     let file = e.target.files[0]
+document.querySelector("#file-upload input[type='file']").addEventListener("input", e => {
+    let file = e.target.files[0]
     
-//     const textblob = new Blob([file])
-//     textblob.text().then(text => document.querySelector("#scriptText").innerText = text)
-
-//     // const reader = new FileReader();
-//     // reader.addEventListener('load', (event) => {
-//     //     console.log(event.target.result);
-//     // })
-//     // reader.readAsText(file)
-// })
-
-document.querySelector("#script-input").addEventListener("click", e => {
-    document.querySelector("#scriptText").focus()
+    const textblob = new Blob([file])
+    textblob.text().then(text => {
+        document.querySelector("#scriptText").innerText = text
+        updateScriptFileAlert()
+    })
+    // const reader = new FileReader();
+    // reader.addEventListener('load', (event) => {
+    //     console.log(event.target.result);
+    // })
+    // reader.readAsText(file)
 })
 
 document.querySelector("#scriptText").addEventListener("input", e => {
