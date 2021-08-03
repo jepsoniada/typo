@@ -15,16 +15,21 @@ body
             #script-input
                 #scriptText(noval='' contenteditable)
                 .input-sidebar
-                    label#file-upload
-                        | &#x5dd;
-                        input(type="file")
+                    - var sidebarbtns = [["file-upload", "../file_import_icon.svg", "file"],["uploadScript", "../add.svg", "button"],["removeScript", "../remove.svg", "button"]]
+                    each elem in sidebarbtns
+                        label.input-sidebar-button(id=`${elem[0]}`, title=`${elem[0]}`)
+                            img(src=`${elem[1]}`, alt="")
+                            input(type=`${elem[2]}`)
+
             //- #script-input
             //-     //- label#file-upload
             //-     //-     input(type="file")
             //-     #scriptText(noval='' contenteditable)
-            label#uploadScript
-                input(type="button")
-                | upload
-            label#removeScript
-                input(type="button")
-                | remove
+
+            //- label#uploadScript
+            //-     input(type="button")
+            //-     | upload
+            //- label#removeScript
+            //-     input(type="button")
+            //-     | removerelload
+            

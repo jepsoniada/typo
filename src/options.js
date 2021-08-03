@@ -7,6 +7,12 @@ const focusedScript = {focused: ""}
 function returnAndDisplayIsValueBanned(inputString, outputNode) {
     console.log("returnAndDisplayIsValueBanned")
     console.log(inputString)
+    if (inputString.search(" ") > -1) {
+        console.log("got spaces")
+        outputNode.style.display = "grid"
+        outputNode.innerText = `can't use spaces in nameing`
+        return true
+    }
     for (let i in scriptDefaults) {
         if (i == inputString) {
             console.log("found it!!!")
@@ -25,10 +31,10 @@ function removeDisplay() {
     if (Object.keys(scriptsCache).find(e => e == value) == undefined) {
         document.querySelector("#removeScript").style.display = "none"
     } else {
-        document.querySelector("#removeScript").style.display = "inline-block"
+        document.querySelector("#removeScript").style.display = "grid"
         focusedScript.focused = value
     }
-    // inline-block | none
+    // grid | none
 }
 
 function scriptHeadReactionForClick(target) {
@@ -166,7 +172,7 @@ document.querySelector("#scriptText").addEventListener("input", e => {
 })
 
 // uploads script to storage
-document.querySelector("#uploadScript").addEventListener("click", async () => {
+document.querySelector("#uploadScript input[type='button']").addEventListener("click", async () => {
     if (isScriptDataFilled()) {
         const objToSet = new Object({[document.querySelector("#scriptName input").value]: document.querySelector("#scriptText").innerText})
         await chrome.storage.sync.set(objToSet)
@@ -178,7 +184,7 @@ document.querySelector("#uploadScript").addEventListener("click", async () => {
 })
 
 // removes script to storage
-document.querySelector("#removeScript").addEventListener("mousedown", () => {
+document.querySelector("#removeScript input[type='button']").addEventListener("click", () => {
     console.log(`should remove`, focusedScript.focused)
     chrome.storage.sync.remove(focusedScript.focused, () => {})
 })

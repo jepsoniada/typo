@@ -1,39 +1,59 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+:root {
+    --appbar-height: 30px;
+    --appbar-max-w: 400px;
+}
+
+.genericblock {
+    border: 0;
+    border-radius: calc(var(--appbar-height) / 2) calc(var(--appbar-height) / 2);
+    background: #fff8;
+    backdrop-filter: blur(50px);
+}
+
+.genericcard {
+    border: 0;
+    padding: 8px;
+    border-radius: calc(var(--appbar-height) / 2) calc(var(--appbar-height) / 2);
+    background: #0008;
+    backdrop-filter: blur(50px);
+}
+
 #typo {
     font: 700 13px Roboto, sans-serif;
     display: none;
     align-items: center;
     flex-direction: column;
+    gap: 8px;
     position: fixed;
     z-index: 99999;
     width: 100%;
     top: 0;
     left: 0;
     margin: 0;
-    padding: 0;
+    padding: 8px 0 0 0;
     border: 0;
 }
 
 #typo_appbar {
-    --appbar-height: 30px;
     display: flex;
+    width: calc(100% - 24px);
     flex-direction: row;
+    max-width: var(--appbar-max-w);
     border: 0;
-    margin: 8px 0;
+    margin: 0;
     padding: 0;
 }
 
 #typo_input {
     height: var(--appbar-height);
-    width: 350px;
+    /* width: 350px; */
+    flex-grow: 1;
     display: flex;
     justify-content: center;
-    border-radius: var(--appbar-height) var(--appbar-height);
-    border: 0;
     margin: 0;
-    background: #fff8;
     box-shadow: 0 1px 2px 1px #0002;
-    backdrop-filter: blur(50px);
 }
 
 #typo_input_elem {
@@ -49,18 +69,13 @@
 }
 
 #typo_options {
-    background: #000;
     height: var(--appbar-height);
     width: var(--appbar-height);
     display: grid;
     place-items: center;
-    border: 0;
     margin: 0 0 0 8px;
     padding: 0;
-    border-radius: var(--appbar-height);
-    background: #fff8;
     box-shadow: 0 1px 2px 1px #0002;
-    backdrop-filter: blur(50px);
 }
 
 #typo_options_icon {
@@ -74,10 +89,8 @@
     padding: 16px 24px;
     border: 0;
     width: 30vw;
-    background: #fff8;
-    backdrop-filter: blur(50px);
+    min-width: var(--appbar-max-w);
     box-shadow: 0 1px 2px 1px #0002;
-    border-radius: 15px;
 }
 
 .typo_scriptlist_script {
@@ -86,6 +99,10 @@
     height: var(--script-height);
     border-radius: 6px;
     box-sizing: content-box;
+}
+
+#typo_arglist {
+    display: none;
 }
 
 .focused {

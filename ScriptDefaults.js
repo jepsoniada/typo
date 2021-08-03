@@ -1,3 +1,5 @@
 export default {
-    options: `chrome.runtime.sendMessage({type: "openOptions"})`
+    options: `function main () {
+        chrome.runtime.sendMessage({type: "openOptions"})
+    }`
 }

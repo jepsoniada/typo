@@ -5,6 +5,7 @@
 }
 
 body {
+    color: #222;
     width: 100%;
     height: 100%;
 }
@@ -21,6 +22,10 @@ body {
     flex-direction: row;
     justify-content: space-between;
     --script-name-height: 30px;
+}
+
+#script-page .name #scriptName input::placeholder {
+    color: #0005;
 }
 
 .hintBox {
@@ -53,7 +58,10 @@ body {
 
 #scriptText {
     padding: 50px;
-    background: #f80;
+    border-radius: 16px;
+    background: #fff;
+    /* background: #f80; */
+    box-shadow: 0 0 4px #0005;
     flex-grow: 1;
     font-size: var(--scriptText-font-size);
     min-height: var(--scriptText-line-height);
@@ -96,8 +104,10 @@ body {
 
 
 .input-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
     width: 40px;
-    background: #f000;
 }
 
 #sidebar {
@@ -110,7 +120,7 @@ body {
 }
 
 #script-page {
-    background: #fff;
+    background: #fafafa;
     padding: 20px;
     display: flex;
     gap: 8px;
@@ -126,19 +136,28 @@ input[type="file"] {
     gap: 8px;
 }
 
-#file-upload {
+.input-sidebar-button {
     --file-upload-size: 40px;
     height: var(--file-upload-size);
     width: var(--file-upload-size);
     border-radius: 16px;
     display: grid;
     place-content: center;
-    /* background: #0002; */
+    background: #fff;
     box-shadow: 0 0 4px #0005;
+    transition: box-shadow ease-in-out .1s;
 }
 
-#file-upload input[type='file'] {
+.input-sidebar-button:hover, .input-sidebar-button:focus {
+    box-shadow: 0 0 6px #26da;
+}
+
+.input-sidebar-button input {
     display: none;
+}
+
+.input-sidebar-button img {
+    filter: contrast(0) brightness(1);
 }
 
 #scriptName input:focus {
@@ -147,11 +166,11 @@ input[type="file"] {
 
 #removeScript {
     display: none;
-    padding: 10px 50px;
-    background: #f00;
+    /* padding: 10px 50px; */
+    /* background: #f00; */
 }
 
-#removeScript input {
+/* #removeScript input {
     display: none;
 }
 
@@ -163,4 +182,4 @@ input[type="file"] {
 
 #uploadScript input {
     display: none;
-}
+} */
