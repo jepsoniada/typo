@@ -10,6 +10,7 @@
     border-radius: calc(var(--appbar-height) / 2) calc(var(--appbar-height) / 2);
     background: #fff8;
     backdrop-filter: blur(50px);
+    box-shadow: 0 1px 2px 1px #0002;
 }
 
 .genericcard {
@@ -38,6 +39,7 @@
 
 #typo_appbar {
     display: flex;
+    gap: 8px;
     width: calc(100% - 24px);
     flex-direction: row;
     max-width: var(--appbar-max-w);
@@ -53,11 +55,10 @@
     display: flex;
     justify-content: center;
     margin: 0;
-    box-shadow: 0 1px 2px 1px #0002;
 }
 
 #typo_input_elem {
-    width: calc(350px - var(--appbar-height));
+    width: calc(100% - var(--appbar-height));
     margin: 0;
     padding: 0;
     border: 0;
@@ -68,14 +69,25 @@
     outline: 0;
 }
 
+/* #typo_morphic {
+    margin: 0;
+} */
+
+#typo_argument_count {
+    height: var(--appbar-height);
+    display: none; /* none | grid */
+    place-items: center;
+    margin: 0;
+    padding: 0 calc(var(--appbar-height) / 2);
+}
+
 #typo_options {
     height: var(--appbar-height);
     width: var(--appbar-height);
-    display: grid;
+    display: grid; /* none | grid */
     place-items: center;
-    margin: 0 0 0 8px;
+    margin: 0;
     padding: 0;
-    box-shadow: 0 1px 2px 1px #0002;
 }
 
 #typo_options_icon {
@@ -90,7 +102,6 @@
     border: 0;
     width: 30vw;
     min-width: var(--appbar-max-w);
-    box-shadow: 0 1px 2px 1px #0002;
 }
 
 .typo_scriptlist_script {

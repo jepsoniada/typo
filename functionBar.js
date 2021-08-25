@@ -1,3 +1,8 @@
+// TODO:
+// <escape> key behavior on middle of arg passing;
+// fix mod change after func w/args throwing err;
+// add functionality to arg_count;
+
 import app from './src/app.pug'
 import scriptDefaults from './ScriptDefaults.js'
 console.log("bundled")
@@ -50,11 +55,15 @@ const typo = {
             case "arg": {
                 document.querySelector("#typo_scriptlist").style.display = "none"
                 document.querySelector("#typo_arglist").style.display = "initial"
+                document.querySelector("#typo_argument_count").style.display = "grid"
+                document.querySelector("#typo_options").style.display = "none"
                 break
             }
             case "main": {
                 document.querySelector("#typo_scriptlist").style.display = "initial"
                 document.querySelector("#typo_arglist").style.display = "none"
+                document.querySelector("#typo_argument_count").style.display = "none"
+                document.querySelector("#typo_options").style.display = "grid"
                 break
             }
         }
