@@ -1,7 +1,6 @@
 // TODO:
-// <escape> key behavior on middle of arg passing;
-// fix mod change after func w/args throwing err;
-// add functionality to arg_count;
+// add visual error handling
+/// maybe make methods in typo like "toVisualMainMode" and "toVisualArgMode" - changing all 
 
 import app from './src/app.pug'
 import scriptDefaults from './ScriptDefaults.js'
@@ -47,6 +46,8 @@ const typo = {
     funcWithArgsAcc: [],
     // same as above but with arg names
     funcConstructorData: [],
+    // index for interating through funcConstructorData
+    fcdItr: 0,
     // first on top
     argTips: [],
 
@@ -67,6 +68,11 @@ const typo = {
                 break
             }
         }
+    },
+
+    updateNumOfArgsLeft () {
+        document.querySelector('#typo_argument_count').innerText = `${this.fcdItr + 1} of ${this.funcConstructorData.slice(1).length}`
+        this.fcdItr++
     },
 
     updateDisplay () {
@@ -137,6 +143,14 @@ document.addEventListener("keyup",e => {
             document.getElementById("typo_input_elem").focus()
         })
     } else if (e.key == "Escape") {
+        if (typo.mode_value == "arg") {
+            typo.funcWithArgsAcc = []
+            typo.funcConstructorData = []
+            typo.argTips = []
+            typo.mode("main")
+            typo.fcdItr = 0
+            typo.updateModeDependDisplay()
+        } else if (typo.mode_value == "main") {}
         document.querySelector("#typo_input_elem").value = ""
         typo.enabled = false
         typo.updateDisplay()
@@ -242,8 +256,6 @@ document.addEventListener("keydown", e => {
             //     typo.updateDisplay()
             //     break
             case "Enter": {
-                // console.log(JSON.stringify(typo), '\n', Object.entries(typo), '\n', Object.assign({}, typo))
-                // console.log(JSON.stringify(typo), '\n', JSON.parse(JSON.stringify(typo)))
                 console.log(JSON.parse(JSON.stringify(typo)))
                 if (typo.mode_value == "main") {
                     let innerArgs = scriptsCache[typo.sugestions[typo.focused]].match(/function\smain\s*\((.*)\)\s*\{?/)[1].split(/,/)
@@ -261,6 +273,8 @@ document.addEventListener("keydown", e => {
                         typo.funcWithArgsAcc.push(typo.sugestions[typo.focused])
                         typo.funcConstructorData.push(typo.sugestions[typo.focused])
                         typo.funcConstructorData.push(...innerArgs)
+                        typo.fcdItr = 0
+                        typo.updateNumOfArgsLeft()
                         typo.argTips = [...innerArgs]
                         typo.updateModeDependDisplay()
                         typo.sugestions.length = 0
@@ -273,12 +287,18 @@ document.addEventListener("keydown", e => {
                 } else if (typo.mode_value == "arg") {
                     typo.funcWithArgsAcc.push(document.querySelector("#typo_input_elem").value)
                     if (typo.funcWithArgsAcc.length < typo.funcConstructorData.slice(1).length + 1) {
+                        typo.updateNumOfArgsLeft()
                         document.querySelector("#typo_input_elem").value = ""
                         console.log(typo)
                         break
                     }
                     let funcContent = scriptsCache[typo.funcConstructorData[0]].replace(/function\smain\s*\(.*\)\s*\{?/, '').replace(/\}\s*$/, '')
-                    new Function(...typo.funcConstructorData.slice(1), funcContent)(...typo.funcWithArgsAcc.slice(1))
+                    try {
+                        new Function(...typo.funcConstructorData.slice(1), funcContent)(...typo.funcWithArgsAcc.slice(1))
+                    } catch (e) {
+                        console.error("TYPO: function thrown error\n", e)
+                    }
+                    console.log("in arg gets pass on err")
 
                     typo.funcWithArgsAcc = []
                     typo.funcConstructorData = []
@@ -287,6 +307,7 @@ document.addEventListener("keydown", e => {
                     typo.enabled = false
                     typo.updateDisplay()
                     typo.mode("main")
+                    typo.fcdItr = 0
                     typo.updateModeDependDisplay()
                 }
                 // console.log(JSON.stringify(typo), '\n', Object.entries(typo), '\n', Object.assign({}, typo))
