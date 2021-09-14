@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
-:root {
-    --appbar-height: 30px;
-    --appbar-max-w: 400px;
-}
+/* :root { */
+    /* --appbar-height: 30px; */
+    /* --appbar-max-w: 400px; */
+/* } */
 
 .genericblock {
     border: 0;
@@ -21,7 +21,14 @@
     backdrop-filter: blur(50px);
 }
 
+/* #typo_root { */
+    /* position: absolute; */
+    /* top: 8px; */
+/* } */
+
 #typo {
+    --appbar-height: 30px;
+    --appbar-max-w: 400px;
     font: 700 13px Roboto, sans-serif;
     display: none;
     align-items: center;

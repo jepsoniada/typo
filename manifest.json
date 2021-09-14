@@ -10,8 +10,7 @@
     "content_scripts": [
         {
            "matches": ["<all_urls>"],
-            "js": ["./dist/functionBar.js"],
-            "css": ["serchBarStyle.css"]
+            "js": ["./dist/functionBar.js"]
         }
     ],
     "options_page": "./dist/typoOptions.html",

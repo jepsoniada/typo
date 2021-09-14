@@ -23,7 +23,7 @@ module.exports = {
             {
                 test: /\.pug$/,
                 use: [
-                    'pug-loader'
+                    'pug-loader',
                 ]
             },
             {
@@ -37,6 +37,13 @@ module.exports = {
                     //     presets: [["@babel/preset-env", {targets: "last 1 version"}]],
                     // }
                 }
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    // "style-loader",
+                    "css-loader",
+                ]
             }
         ]
     }
