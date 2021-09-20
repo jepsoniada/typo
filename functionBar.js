@@ -22,16 +22,16 @@ temp.innerHTML = strHtml
 
 document.body.append(
     (()=>{
-        const a = document.createElement('div')
-        a.id = "typo_root"
-        a.style.position = "absolute"
-        a.style.top = "0"
-        a.attachShadow({mode: 'open'})
-        const b = document.createElement("style")
-        b.innerText = style.toString()
-        a.shadowRoot.append(b)
-        a.shadowRoot.append(temp.content.firstChild)
-        return a
+        const typoRoot = document.createElement('div')
+        typoRoot.id = "typo_root"
+        typoRoot.style.position = "absolute"
+        typoRoot.style.top = "0"
+        typoRoot.attachShadow({mode: 'open'})
+        const inRootStyle = document.createElement("style")
+        inRootStyle.innerText = style.toString()
+        typoRoot.shadowRoot.append(inRootStyle)
+        typoRoot.shadowRoot.append(temp.content.firstChild)
+        return typoRoot
     })()
 )
 // document.body.appendChild(temp.content.firstChild)
@@ -45,17 +45,10 @@ const typo = {
     // arg - for infect arguments to selected function in "main" mode
     mode (e) {
         switch (e) {
-            case "main": {
-                this.mode_value = "main"
-                break
-            }
-            case "arg": {
-                this.mode_value = "arg"
-                break
-            }
+            case "main": { this.mode_value = "main"; break }
+            case "arg": { this.mode_value = "arg"; break }
             default: {
-                console.error("incorrect mode selected")
-                break
+                console.error("incorrect mode selected"); break
             }
         }
     },
@@ -181,11 +174,11 @@ document.addEventListener("keyup", e => {
 document.addEventListener("keydown", e => {
     console.log("just entry")
     if (typo.enabled) {
-        console.log("in switch")
+        e.stopPropagation();
         switch (e.code) {
             case "ArrowUp": {
                 if (typo.mode_value == 'main') {
-                    e.preventDefault()
+                    // e.preventDefault()
                     typo.DOMInterface.querySelector("#typo_scriptlist").children[typo.focused].classList.remove("focused")
                     if (typo.focused == 0) {
                         typo.DOMInterface.querySelector("#typo_scriptlist").children[typo.sugestions.length-1].classList.add("focused")
@@ -199,7 +192,7 @@ document.addEventListener("keydown", e => {
             }
             case "ArrowDown": {
                 if (typo.mode_value == 'main') {
-                    e.preventDefault()
+                    // e.preventDefault()
                     typo.DOMInterface.querySelector("#typo_scriptlist").children[typo.focused].classList.remove("focused")
                     if (typo.focused == document.querySelector("#typo_scriptlist").childElementCount-1) {
                         typo.DOMInterface.querySelector("#typo_scriptlist").children[0].classList.add("focused")
@@ -213,8 +206,7 @@ document.addEventListener("keydown", e => {
             }
             case "Tab": {
                 if (typo.mode_value == 'main') {
-                    e.preventDefault()
-                    // e.stopPropagation()  
+                    // e.preventDefault()
                     typo.DOMInterface.querySelector("#typo_input_elem").value = typo.sugestions[typo.focused]
                     sugestionUpdate(typo.sugestions[typo.focused])
                 }
@@ -312,7 +304,7 @@ document.addEventListener("keydown", e => {
             }
         }
     }    
-})
+}, { capture: true })
 
 // document.addEventListener("input", e => {
 //     if (document.querySelector("#typo_input_elem").value == e.target.value ? Object.keys(scriptsCache) : false && typo.mode_value == "arg") {
