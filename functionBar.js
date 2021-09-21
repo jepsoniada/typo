@@ -1,9 +1,6 @@
 // TODO:
 // add visual error handling
 /// maybe make methods in typo like "toVisualMainMode" and "toVisualArgMode" - changing all 
-/// consider "shadow dom" for stylesheets separatoin - https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM
-// ^
-// kinda works but not optimalized
 
 import app from './src/app.pug'
 import scriptDefaults from './ScriptDefaults.js'
@@ -26,6 +23,7 @@ document.body.append(
         typoRoot.id = "typo_root"
         typoRoot.style.position = "absolute"
         typoRoot.style.top = "0"
+        typoRoot.style.zIndex = "99999"
         typoRoot.attachShadow({mode: 'open'})
         const inRootStyle = document.createElement("style")
         inRootStyle.innerText = style.toString()
@@ -68,24 +66,24 @@ const typo = {
     updateModeDependDisplay () {
         switch (this.mode_value) {
             case "arg": {
-                this.DOMInterface.querySelector("#typo_scriptlist").style.display = "none"
-                this.DOMInterface.querySelector("#typo_arglist").style.display = "initial"
-                this.DOMInterface.querySelector("#typo_argument_count").style.display = "grid"
-                this.DOMInterface.querySelector("#typo_options").style.display = "none"
+                this.DOMInterface.querySelector("#scriptlist").style.display = "none"
+                this.DOMInterface.querySelector("#arglist").style.display = "initial"
+                this.DOMInterface.querySelector("#argument_count").style.display = "grid"
+                this.DOMInterface.querySelector("#options").style.display = "none"
                 break
             }
             case "main": {
-                this.DOMInterface.querySelector("#typo_scriptlist").style.display = "initial"
-                this.DOMInterface.querySelector("#typo_arglist").style.display = "none"
-                this.DOMInterface.querySelector("#typo_argument_count").style.display = "none"
-                this.DOMInterface.querySelector("#typo_options").style.display = "grid"
+                this.DOMInterface.querySelector("#scriptlist").style.display = "initial"
+                this.DOMInterface.querySelector("#arglist").style.display = "none"
+                this.DOMInterface.querySelector("#argument_count").style.display = "none"
+                this.DOMInterface.querySelector("#options").style.display = "grid"
                 break
             }
         }
     },
 
     updateNumOfArgsLeft () {
-        this.DOMInterface.querySelector('#typo_argument_count').innerText = `${this.fcdItr + 1} of ${this.funcConstructorData.slice(1).length}`
+        this.DOMInterface.querySelector('#argument_count').innerText = `${this.fcdItr + 1} of ${this.funcConstructorData.slice(1).length}`
         this.fcdItr++
     },
 
@@ -108,7 +106,7 @@ document.addEventListener("keyup", e => {
     //         inputBuffor.push(e.code)
     //         break
     //     case "Escape":
-    //         document.querySelector("#typo_input_elem").value = ""
+    //         document.querySelector("#input_elem").value = ""
     //         typo.enabled = !1
     //         typo.updateDisplay()
     //     default: 
@@ -128,7 +126,7 @@ document.addEventListener("keyup", e => {
             typo.enabled = true
             typo.updateDisplay()
             sugestionUpdate("")
-            typo.DOMInterface.querySelector("#typo_input_elem").focus()
+            typo.DOMInterface.querySelector("#input_elem").focus()
         })
     } else if (e.key == "Escape") {
         if (typo.mode_value == "arg") {
@@ -139,11 +137,10 @@ document.addEventListener("keyup", e => {
             typo.fcdItr = 0
             typo.updateModeDependDisplay()
         } else if (typo.mode_value == "main") {}
-        typo.DOMInterface.querySelector("#typo_input_elem").value = ""
+        typo.DOMInterface.querySelector("#input_elem").value = ""
         typo.enabled = false
         typo.updateDisplay()
     }
-
 
     // let anyShift = (inputBuffor.includes("ShiftLeft") || inputBuffor.includes("ShiftRight"))
     // let anyControl = (inputBuffor.includes("ControlLeft") || inputBuffor.includes("ControlRight"))
@@ -178,13 +175,13 @@ document.addEventListener("keydown", e => {
         switch (e.code) {
             case "ArrowUp": {
                 if (typo.mode_value == 'main') {
-                    // e.preventDefault()
-                    typo.DOMInterface.querySelector("#typo_scriptlist").children[typo.focused].classList.remove("focused")
+                    e.preventDefault()
+                    typo.DOMInterface.querySelector("#scriptlist").children[typo.focused].classList.remove("focused")
                     if (typo.focused == 0) {
-                        typo.DOMInterface.querySelector("#typo_scriptlist").children[typo.sugestions.length-1].classList.add("focused")
+                        typo.DOMInterface.querySelector("#scriptlist").children[typo.sugestions.length-1].classList.add("focused")
                         typo.focused = typo.sugestions.length-1
                     } else {
-                        typo.DOMInterface.querySelector("#typo_scriptlist").children[typo.focused-1].classList.add("focused")
+                        typo.DOMInterface.querySelector("#scriptlist").children[typo.focused-1].classList.add("focused")
                         typo.focused -= 1
                     }
                 }
@@ -192,13 +189,13 @@ document.addEventListener("keydown", e => {
             }
             case "ArrowDown": {
                 if (typo.mode_value == 'main') {
-                    // e.preventDefault()
-                    typo.DOMInterface.querySelector("#typo_scriptlist").children[typo.focused].classList.remove("focused")
-                    if (typo.focused == document.querySelector("#typo_scriptlist").childElementCount-1) {
-                        typo.DOMInterface.querySelector("#typo_scriptlist").children[0].classList.add("focused")
+                    e.preventDefault()
+                    typo.DOMInterface.querySelector("#scriptlist").children[typo.focused].classList.remove("focused")
+                    if (typo.focused == typo.DOMInterface.querySelector("#scriptlist").childElementCount-1) {
+                        typo.DOMInterface.querySelector("#scriptlist").children[0].classList.add("focused")
                         typo.focused = 0
                     } else {
-                        typo.DOMInterface.querySelector("#typo_scriptlist").children[typo.focused+1].classList.add("focused")
+                        typo.DOMInterface.querySelector("#scriptlist").children[typo.focused+1].classList.add("focused")
                         typo.focused += 1
                     }
                 }
@@ -206,8 +203,8 @@ document.addEventListener("keydown", e => {
             }
             case "Tab": {
                 if (typo.mode_value == 'main') {
-                    // e.preventDefault()
-                    typo.DOMInterface.querySelector("#typo_input_elem").value = typo.sugestions[typo.focused]
+                    e.preventDefault()
+                    typo.DOMInterface.querySelector("#input_elem").value = typo.sugestions[typo.focused]
                     sugestionUpdate(typo.sugestions[typo.focused])
                 }
                 break
@@ -238,7 +235,7 @@ document.addEventListener("keydown", e => {
             //         // })(err)
             //         console.error("TYPO: something went wrong\n\n", err)
             //     }
-            //     document.querySelector("#typo_input_elem").value = ""
+            //     document.querySelector("#input_elem").value = ""
             //     typo.enabled = false
             //     typo.updateDisplay()
             //     break
@@ -256,7 +253,7 @@ document.addEventListener("keydown", e => {
                     let funcToCheck = new Function(...innerArgs, funcContent)
                     if (funcToCheck.length > 0) {
                         typo.mode("arg")
-                        typo.DOMInterface.querySelector("#typo_input_elem").value = ""
+                        typo.DOMInterface.querySelector("#input_elem").value = ""
                         typo.funcWithArgsAcc.push(typo.sugestions[typo.focused])
                         typo.funcConstructorData.push(typo.sugestions[typo.focused])
                         typo.funcConstructorData.push(...innerArgs)
@@ -267,15 +264,15 @@ document.addEventListener("keydown", e => {
                         typo.sugestions.length = 0
                     } else {
                         funcToCheck()
-                        typo.DOMInterface.querySelector("#typo_input_elem").value = ""
+                        typo.DOMInterface.querySelector("#input_elem").value = ""
                         typo.enabled = false
                         typo.updateDisplay()
                     }
                 } else if (typo.mode_value == "arg") {
-                    typo.funcWithArgsAcc.push(typo.DOMInterface.querySelector("#typo_input_elem").value)
+                    typo.funcWithArgsAcc.push(typo.DOMInterface.querySelector("#input_elem").value)
                     if (typo.funcWithArgsAcc.length < typo.funcConstructorData.slice(1).length + 1) {
                         typo.updateNumOfArgsLeft()
-                        typo.DOMInterface.querySelector("#typo_input_elem").value = ""
+                        typo.DOMInterface.querySelector("#input_elem").value = ""
                         console.log(typo)
                         break
                     }
@@ -290,7 +287,7 @@ document.addEventListener("keydown", e => {
                     typo.funcWithArgsAcc = []
                     typo.funcConstructorData = []
                     typo.argTips = []
-                    typo.DOMInterface.querySelector("#typo_input_elem").value = ""
+                    typo.DOMInterface.querySelector("#input_elem").value = ""
                     typo.enabled = false
                     typo.updateDisplay()
                     typo.mode("main")
@@ -307,19 +304,20 @@ document.addEventListener("keydown", e => {
 }, { capture: true })
 
 // document.addEventListener("input", e => {
-//     if (document.querySelector("#typo_input_elem").value == e.target.value ? Object.keys(scriptsCache) : false && typo.mode_value == "arg") {
+//     if (document.querySelector("#input_elem").value == e.target.value ? Object.keys(scriptsCache) : false && typo.mode_value == "arg") {
 //         sugestionUpdate(e.target.value)
 //     }
 // })
-typo.DOMInterface.querySelector('#typo_input_elem').addEventListener("input", e => {
+
+typo.DOMInterface.querySelector("#input_elem").addEventListener("input", e => {
     if (typo.mode_value == "main") {
         sugestionUpdate(e.target.value)
     }
 })
 
 function sugestionUpdate(strValue) {
-    Array.from(typo.DOMInterface.querySelector("#typo_scriptlist").children).forEach(item => typo.DOMInterface.querySelector("#typo_scriptlist").removeChild(item))
-    let funcPickComponentStr = `<div class="typo_scriptlist_script"></div>`
+    Array.from(typo.DOMInterface.querySelector("#scriptlist").children).forEach(item => typo.DOMInterface.querySelector("#scriptlist").removeChild(item))
+    let funcPickComponentStr = `<div class="scriptlist_script"></div>`
     let temp = document.createElement("template")
     typo.sugestions = Object.keys(scriptsCache).filter(item => {
         let reg = new RegExp(strValue)
@@ -334,10 +332,10 @@ function sugestionUpdate(strValue) {
         typo.focused = 0
     }
     Array.from(temp.content.children).forEach(elem => {
-        typo.DOMInterface.querySelector("#typo_scriptlist").appendChild(elem)
+        typo.DOMInterface.querySelector("#scriptlist").appendChild(elem)
     })
 }
 
-typo.DOMInterface.querySelector("#typo_options").addEventListener("click", () => {
+typo.DOMInterface.querySelector("#options").addEventListener("click", () => {
     chrome.runtime.sendMessage({type: "openOptions"})
 })

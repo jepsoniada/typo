@@ -1,10 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
-/* :root { */
-    /* --appbar-height: 30px; */
-    /* --appbar-max-w: 400px; */
-/* } */
-
 .genericblock {
     border: 0;
     border-radius: calc(var(--appbar-height) / 2) calc(var(--appbar-height) / 2);
@@ -21,50 +16,36 @@
     backdrop-filter: blur(50px);
 }
 
-/* #typo_root { */
-    /* position: absolute; */
-    /* top: 8px; */
-/* } */
-
 #typo {
     --appbar-height: 30px;
-    --appbar-max-w: 400px;
+    --appbar-max-w: 402px;
     font: 700 13px Roboto, sans-serif;
     display: none;
     align-items: center;
     flex-direction: column;
     gap: 8px;
     position: fixed;
-    z-index: 99999;
     width: 100%;
-    top: 0;
-    left: 0;
-    margin: 0;
-    padding: 8px 0 0 0;
-    border: 0;
+    top: 8px;
 }
 
-#typo_appbar {
+#appbar {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     width: calc(100% - 24px);
     flex-direction: row;
-    max-width: var(--appbar-max-w);
-    border: 0;
-    margin: 0;
-    padding: 0;
+    max-width: calc(var(--appbar-max-w) + 48px - 12px);
 }
 
-#typo_input {
+#input {
     height: var(--appbar-height);
     /* width: 350px; */
     flex-grow: 1;
     display: flex;
     justify-content: center;
-    margin: 0;
 }
 
-#typo_input_elem {
+#input_elem {
     width: calc(100% - var(--appbar-height));
     margin: 0;
     padding: 0;
@@ -72,46 +53,41 @@
     background: #0000;
 }
 
-#typo_input_elem:focus {
+#input_elem:focus {
     outline: 0;
 }
 
-/* #typo_morphic {
+/* #morphic {
     margin: 0;
 } */
 
-#typo_argument_count {
+#argument_count {
     height: var(--appbar-height);
     display: none; /* none | grid */
     place-items: center;
-    margin: 0;
     padding: 0 calc(var(--appbar-height) / 2);
 }
 
-#typo_options {
+#options {
     height: var(--appbar-height);
     width: var(--appbar-height);
     display: grid; /* none | grid */
     place-items: center;
-    margin: 0;
-    padding: 0;
 }
 
-#typo_options_icon {
+#options_icon {
     height: 24px;
     width: 24px;
     fill: #0005;
 }
 
-#typo_scriptlist {
-    margin: 0;
+#scriptlist {
     padding: 16px 24px;
-    border: 0;
     width: 30vw;
     min-width: var(--appbar-max-w);
 }
 
-.typo_scriptlist_script {
+.scriptlist_script {
     --script-height: 16px;
     padding: 2px calc(var(--script-height) / 2 + 4px);
     height: var(--script-height);
@@ -119,7 +95,7 @@
     box-sizing: content-box;
 }
 
-#typo_arglist {
+#arglist {
     display: none;
 }
 
