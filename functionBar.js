@@ -1,5 +1,6 @@
 // TODO:
 // add visual error handling
+/// rework typo as anon class and move update functions to setters
 /// maybe make methods in typo like "toVisualMainMode" and "toVisualArgMode" - changing all 
 
 import app from './src/app.pug'
@@ -93,7 +94,7 @@ const typo = {
 }
 
 // open menu
-document.addEventListener("keyup", e => {
+document.addEventListener("keyup", event => {
     // switch (e.code) {
     //     case "KeyK":
     //     case "ShiftLeft":
@@ -112,7 +113,7 @@ document.addEventListener("keyup", e => {
     //     default: 
     //         inputBuffor.length = 0; break
     // }
-    if (e.code == "KeyK" && e.ctrlKey && e.shiftKey) {
+    if (event.code == "KeyK" && event.ctrlKey && event.shiftKey) {
         new Promise((res, rej) => {
             chrome.storage.sync.get(null, items => res(items))
         }).then( valfromstorage => {
@@ -122,13 +123,12 @@ document.addEventListener("keyup", e => {
                     scriptsCache[key] = valfromstorage[key]
                 }
             }
-            // console.log(scriptsCache)
             typo.enabled = true
             typo.updateDisplay()
             sugestionUpdate("")
             typo.DOMInterface.querySelector("#input_elem").focus()
         })
-    } else if (e.key == "Escape") {
+    } else if (event.key == "Escape") {
         if (typo.mode_value == "arg") {
             typo.funcWithArgsAcc = []
             typo.funcConstructorData = []
@@ -168,14 +168,14 @@ document.addEventListener("keyup", e => {
 })
 
 // choosing scripts handler
-document.addEventListener("keydown", e => {
+document.addEventListener("keydown", event => {
     console.log("just entry")
     if (typo.enabled) {
-        e.stopPropagation();
-        switch (e.code) {
+        event.stopPropagation();
+        switch (event.code) {
             case "ArrowUp": {
                 if (typo.mode_value == 'main') {
-                    e.preventDefault()
+                    event.preventDefault()
                     typo.DOMInterface.querySelector("#scriptlist").children[typo.focused].classList.remove("focused")
                     if (typo.focused == 0) {
                         typo.DOMInterface.querySelector("#scriptlist").children[typo.sugestions.length-1].classList.add("focused")
@@ -189,7 +189,7 @@ document.addEventListener("keydown", e => {
             }
             case "ArrowDown": {
                 if (typo.mode_value == 'main') {
-                    e.preventDefault()
+                    event.preventDefault()
                     typo.DOMInterface.querySelector("#scriptlist").children[typo.focused].classList.remove("focused")
                     if (typo.focused == typo.DOMInterface.querySelector("#scriptlist").childElementCount-1) {
                         typo.DOMInterface.querySelector("#scriptlist").children[0].classList.add("focused")
@@ -203,7 +203,7 @@ document.addEventListener("keydown", e => {
             }
             case "Tab": {
                 if (typo.mode_value == 'main') {
-                    e.preventDefault()
+                    event.preventDefault()
                     typo.DOMInterface.querySelector("#input_elem").value = typo.sugestions[typo.focused]
                     sugestionUpdate(typo.sugestions[typo.focused])
                 }
@@ -279,10 +279,9 @@ document.addEventListener("keydown", e => {
                     let funcContent = scriptsCache[typo.funcConstructorData[0]].replace(/function\smain\s*\(.*\)\s*\{?/, '').replace(/\}\s*$/, '')
                     try {
                         new Function(...typo.funcConstructorData.slice(1), funcContent)(...typo.funcWithArgsAcc.slice(1))
-                    } catch (e) {
-                        console.error("TYPO: function thrown error\n", e)
+                    } catch (error) {
+                        console.error("TYPO: function thrown error\n", error)
                     }
-                    console.log("in arg gets pass on err")
 
                     typo.funcWithArgsAcc = []
                     typo.funcConstructorData = []
@@ -309,9 +308,9 @@ document.addEventListener("keydown", e => {
 //     }
 // })
 
-typo.DOMInterface.querySelector("#input_elem").addEventListener("input", e => {
+typo.DOMInterface.querySelector("#input_elem").addEventListener("input", event => {
     if (typo.mode_value == "main") {
-        sugestionUpdate(e.target.value)
+        sugestionUpdate(event.target.value)
     }
 })
 
@@ -319,13 +318,21 @@ function sugestionUpdate(strValue) {
     Array.from(typo.DOMInterface.querySelector("#scriptlist").children).forEach(item => typo.DOMInterface.querySelector("#scriptlist").removeChild(item))
     let funcPickComponentStr = `<div class="scriptlist_script"></div>`
     let temp = document.createElement("template")
-    typo.sugestions = Object.keys(scriptsCache).filter(item => {
-        let reg = new RegExp(strValue)
-        return (item.match(reg) != null ? true : false)
-    })
-    for (const [i, v] of typo.sugestions.entries()) {
+
+    let reg = new RegExp(strValue)
+    typo.sugestions = Object.keys(scriptsCache)
+        .filter(item => {
+            // let reg = new RegExp(strValue)
+            // return (item.match(reg) != null ? true : false)
+
+            return (reg.test(item))
+        })
+        .sort((a, b) => {
+            return a.match(reg)["index"] - b.match(reg)["index"]
+        })
+    for (const [i, value] of typo.sugestions.entries()) {
         temp.innerHTML += funcPickComponentStr
-        temp.content.children[i].innerText = v
+        temp.content.children[i].innerText = value
     }
     if (temp.content.children.length > 0) {
         temp.content.children[0].classList.add("focused")
